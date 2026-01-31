@@ -5,11 +5,11 @@ export const CHECKIN_MODELS: CheckInModel[] = [
   {
     id: 'care',
     acronym: 'C.A.R.E.',
-    title: 'Simple & Warm',
+    title: 'Daily Wellness & Repair',
     emoji: '❤️',
     color: 'bg-pink-100 text-pink-700',
     buttonColor: 'bg-pink-500 hover:bg-pink-600 shadow-pink-200',
-    description: 'Best for weekly 15-minute check-ins.',
+    description: 'A gentle structure for emotional safety and practical support.',
     steps: [
       { letter: 'C', word: 'Connect', emoji: '🤝', question: 'How are you emotionally this week, [Name]?' },
       { letter: 'A', word: 'Appreciate', emoji: '🌟', question: 'What is one thing I appreciated about you this week, [Name]?' },
@@ -20,11 +20,11 @@ export const CHECKIN_MODELS: CheckInModel[] = [
   {
     id: 'love',
     acronym: 'L.O.V.E.',
-    title: 'Very Easy to Remember',
+    title: 'Connection & Listening',
     emoji: '💛',
     color: 'bg-rose-100 text-rose-700',
     buttonColor: 'bg-rose-500 hover:bg-rose-600 shadow-rose-200',
-    description: 'Gentle and non-intimidating. Great for couples.',
+    description: 'Focuses on making each other feel valued and intentionally engaged.',
     steps: [
       { letter: 'L', word: 'Listen', emoji: '👂', question: 'What’s on your heart right now, [Name]?' },
       { letter: 'O', word: 'Observe', emoji: '👁️', question: 'How are you feeling — really, [Name]?' },
@@ -35,11 +35,11 @@ export const CHECKIN_MODELS: CheckInModel[] = [
   {
     id: 'alive',
     acronym: 'A.L.I.V.E.',
-    title: 'Deeper Growth Model',
+    title: 'Growth & Shared Vision',
     emoji: '🔥',
     color: 'bg-fuchsia-100 text-fuchsia-700',
     buttonColor: 'bg-fuchsia-500 hover:bg-fuchsia-600 shadow-fuchsia-200',
-    description: 'Best for monthly deeper conversations.',
+    description: 'A deep dive into learning about each other and aligning your future.',
     recommended: 'Monthly',
     steps: [
       { letter: 'A', word: 'Appreciation', emoji: '💖', question: 'What did you love about us this month, [Name]?' },
@@ -52,11 +52,11 @@ export const CHECKIN_MODELS: CheckInModel[] = [
   {
     id: 'peace',
     acronym: 'P.E.A.C.E.',
-    title: 'Faith-Based Check-In',
+    title: 'Spiritual Unity & Grace',
     emoji: '🕊️',
     color: 'bg-cyan-100 text-cyan-700',
     buttonColor: 'bg-cyan-600 hover:bg-cyan-700 shadow-cyan-200',
-    description: 'Ideal for couples who value spiritual depth.',
+    description: 'Built for couples to pray, address conflict with grace, and bless each other.',
     steps: [
       { letter: 'P', word: 'Prayer', emoji: '🙏', question: 'How can I pray for you this week, [Name]?' },
       { letter: 'E', word: 'Emotional State', emoji: '🎭', question: 'Where is your soul at today, [Name]?' },

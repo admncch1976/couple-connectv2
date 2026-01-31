@@ -2,11 +2,11 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { AIInsight, DateIdea } from "./types";
 
-// Always use the API key directly from process.env.API_KEY without fallback
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 export const geminiService = {
   async analyzeCheckIn(modelAcronym: string, notes: Record<number, string>): Promise<AIInsight> {
+    // Create a new GoogleGenAI instance right before making an API call to ensure it always uses the most up-to-date API key
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    
     const prompt = `Analyze this couple's relationship check-in based on the ${modelAcronym} framework.
     Notes provided: ${JSON.stringify(notes)}
     Provide a warm, supportive analysis including current mood, words of encouragement, and one specific area to focus on for growth this week.`;
@@ -28,11 +28,15 @@ export const geminiService = {
       }
     });
 
-    // Access the .text property directly from the response
-    return JSON.parse(response.text || '{}') as AIInsight;
+    // Access the .text property directly from the response as a string
+    const jsonStr = response.text || '{}';
+    return JSON.parse(jsonStr) as AIInsight;
   },
 
   async suggestDateIdeas(timeframe: string): Promise<DateIdea[]> {
+    // Create a new GoogleGenAI instance right before making an API call
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
     const prompt = `Suggest 3 unique and creative date ideas for a couple based on a ${timeframe} timeframe.
     Make them intentional, focusing on connection and fun.`;
 
@@ -56,7 +60,8 @@ export const geminiService = {
       }
     });
 
-    // Access the .text property directly from the response
-    return JSON.parse(response.text || '[]') as DateIdea[];
+    // Access the .text property directly from the response as a string
+    const jsonStr = response.text || '[]';
+    return JSON.parse(jsonStr) as DateIdea[];
   }
 };
