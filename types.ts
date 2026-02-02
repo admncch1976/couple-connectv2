@@ -4,6 +4,7 @@ export interface Step {
   word: string;
   emoji: string;
   question: string;
+  quickThoughts?: string[];
 }
 
 export interface CheckInModel {

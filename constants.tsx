@@ -11,10 +11,26 @@ export const CHECKIN_MODELS: CheckInModel[] = [
     buttonColor: 'bg-pink-500 hover:bg-pink-600 shadow-pink-200',
     description: 'A gentle structure for emotional safety and practical support.',
     steps: [
-      { letter: 'C', word: 'Connect', emoji: '🤝', question: 'How are you emotionally this week, [Name]?' },
-      { letter: 'A', word: 'Appreciate', emoji: '🌟', question: 'What is one thing I appreciated about you this week, [Name]?' },
-      { letter: 'R', word: 'Repair', emoji: '🩹', question: 'Is there anything that needs clearing up between us, [Name]?' },
-      { letter: 'E', word: 'Encourage', emoji: '🌻', question: 'How can I specifically support you this week, [Name]?' }
+      { 
+        letter: 'C', word: 'Connect', emoji: '🤝', 
+        question: 'How are you emotionally this week, [Name]?',
+        quickThoughts: ['Feeling peaceful', 'A bit stressed', 'Really happy', 'A bit low', 'Energetic', 'Content']
+      },
+      { 
+        letter: 'A', word: 'Appreciate', emoji: '🌟', 
+        question: 'What is one thing I appreciated about you this week, [Name]?',
+        quickThoughts: ['Your kindness', 'Help with chores', 'Listening to me', 'Your hard work', 'Your smile', 'That hug']
+      },
+      { 
+        letter: 'R', word: 'Repair', emoji: '🩹', 
+        question: 'Is there anything that needs clearing up between us, [Name]?',
+        quickThoughts: ['All clear', 'That small tiff', 'Tone of voice', 'A misunderstanding', 'Unmet expectations', 'Need to talk more']
+      },
+      { 
+        letter: 'E', word: 'Encourage', emoji: '🌻', 
+        question: 'How can I specifically support you this week, [Name]?',
+        quickThoughts: ['More quality time', 'Words of affirmation', 'Help with kids/home', 'Pray for me', 'Just be present', 'Plan a date']
+      }
     ]
   },
   {
@@ -26,10 +42,26 @@ export const CHECKIN_MODELS: CheckInModel[] = [
     buttonColor: 'bg-rose-500 hover:bg-rose-600 shadow-rose-200',
     description: 'Focuses on making each other feel valued and intentionally engaged.',
     steps: [
-      { letter: 'L', word: 'Listen', emoji: '👂', question: 'What’s on your heart right now, [Name]?' },
-      { letter: 'O', word: 'Observe', emoji: '👁️', question: 'How are you feeling — really, [Name]?' },
-      { letter: 'V', word: 'Value', emoji: '💎', question: 'What made you feel valued (or not) this week, [Name]?' },
-      { letter: 'E', word: 'Engage', emoji: '🗓️', question: 'What can we intentionally do together this week, [Name]?' }
+      { 
+        letter: 'L', word: 'Listen', emoji: '👂', 
+        question: 'What’s on your heart right now, [Name]?',
+        quickThoughts: ['Work concerns', 'Future dreams', 'Family stuff', 'Just tired', 'Feeling blessed', 'A bit anxious']
+      },
+      { 
+        letter: 'O', word: 'Observe', emoji: '👁️', 
+        question: 'How are you feeling — really, [Name]?',
+        quickThoughts: ['Vulnerable', 'Strong', 'Disconnected', 'Deeply loved', 'Optimistic', 'Overwhelmed']
+      },
+      { 
+        letter: 'V', word: 'Value', emoji: '💎', 
+        question: 'What made you feel valued (or not) this week, [Name]?',
+        quickThoughts: ['Your text messages', 'Shared meals', 'Being heard', 'Acts of service', 'A compliment', 'Shared prayers']
+      },
+      { 
+        letter: 'E', word: 'Engage', emoji: '🗓️', 
+        question: 'What can we intentionally do together this week, [Name]?',
+        quickThoughts: ['Game night', 'Movie marathon', 'Long walk', 'Cook together', 'Church service', 'Quiet evening']
+      }
     ]
   },
   {
@@ -42,11 +74,11 @@ export const CHECKIN_MODELS: CheckInModel[] = [
     description: 'A deep dive into learning about each other and aligning your future.',
     recommended: 'Monthly',
     steps: [
-      { letter: 'A', word: 'Appreciation', emoji: '💖', question: 'What did you love about us this month, [Name]?' },
-      { letter: 'L', word: 'Learning', emoji: '🧠', question: 'What have you learned about me lately, [Name]?' },
-      { letter: 'I', word: 'Issues', emoji: '🌩️', question: 'Any tension or unspoken frustration, [Name]?' },
-      { letter: 'V', word: 'Vision', emoji: '🔭', question: 'Are we aligned in our current direction, [Name]?' },
-      { letter: 'E', word: 'Intimacy', emoji: '💞', question: 'Do you feel emotionally close to me, [Name]?' }
+      { letter: 'A', word: 'Appreciation', emoji: '💖', question: 'What did you love about us this month, [Name]?', quickThoughts: ['Our resilience', 'Fun adventures', 'Deep talks', 'Growing intimacy', 'Better communication'] },
+      { letter: 'L', word: 'Learning', emoji: '🧠', question: 'What have you learned about me lately, [Name]?', quickThoughts: ['Your new hobby', 'How you handle stress', 'Your inner strength', 'What triggers you', 'Your love language'] },
+      { letter: 'I', word: 'Issues', emoji: '🌩️', question: 'Any tension or unspoken frustration, [Name]?', quickThoughts: ['Finances', 'Time management', 'In-laws', 'Household roles', 'None, doing great', 'Need more intimacy'] },
+      { letter: 'V', word: 'Vision', emoji: '🔭', question: 'Are we aligned in our current direction, [Name]?', quickThoughts: ['Fully aligned', 'Need adjustment', 'Talking about kids', 'Career changes', 'Financial goals'] },
+      { letter: 'E', word: 'Intimacy', emoji: '💞', question: 'Do you feel emotionally close to me, [Name]?', quickThoughts: ['Very close', 'A bit distant', 'Working on it', 'Deeper than ever', 'Need more talk time'] }
     ]
   },
   {
@@ -58,11 +90,11 @@ export const CHECKIN_MODELS: CheckInModel[] = [
     buttonColor: 'bg-cyan-600 hover:bg-cyan-700 shadow-cyan-200',
     description: 'Built for couples to pray, address conflict with grace, and bless each other.',
     steps: [
-      { letter: 'P', word: 'Prayer', emoji: '🙏', question: 'How can I pray for you this week, [Name]?' },
-      { letter: 'E', word: 'Emotional State', emoji: '🎭', question: 'Where is your soul at today, [Name]?' },
-      { letter: 'A', word: 'Appreciation', emoji: '🎁', question: 'What blessed you about our home recently, [Name]?' },
-      { letter: 'C', word: 'Conflict', emoji: '⚖️', question: 'Any tension we need to address with grace, [Name]?' },
-      { letter: 'E', word: 'Encouragement', emoji: '🗣️', question: 'What life-giving word can I speak to you, [Name]?' }
+      { letter: 'P', word: 'Prayer', emoji: '🙏', question: 'How can I pray for you this week, [Name]?', quickThoughts: ['For health', 'For work clarity', 'For peace of mind', 'For our family', 'For spiritual growth'] },
+      { letter: 'E', word: 'Emotional State', emoji: '🎭', question: 'Where is your soul at today, [Name]?', quickThoughts: ['Thirsting for God', 'Resting in grace', 'A bit weary', 'Joyful heart', 'Seeking peace'] },
+      { letter: 'A', word: 'Appreciation', emoji: '🎁', question: 'What blessed you about our home recently, [Name]?', quickThoughts: ['The peaceful vibe', 'Laughter of children', 'Shared devotion', 'A clean space', 'Good food'] },
+      { letter: 'C', word: 'Conflict', emoji: '⚖️', question: 'Any tension we need to address with grace, [Name]?', quickThoughts: ['Forgiven', 'Need to apologize', 'Grace-filled talk', 'Moving forward', 'All clear'] },
+      { letter: 'E', word: 'Encouragement', emoji: '🗣️', question: 'What life-giving word can I speak to you, [Name]?', quickThoughts: ["You're doing great", "I believe in you", "God is with us", "I'm on your team", "You are enough"] }
     ]
   }
 ];

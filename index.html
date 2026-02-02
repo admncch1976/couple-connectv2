@@ -21,6 +21,27 @@
         -ms-overflow-style: none;
         scrollbar-width: none;
       }
+      
+      @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-6px); }
+        100% { transform: translateY(0px); }
+      }
+      .animate-float {
+        animation: float 4s ease-in-out infinite;
+      }
+      .animate-float-delayed {
+        animation: float 4s ease-in-out infinite;
+        animation-delay: 2s;
+      }
+      
+      @keyframes soft-pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(1.05); }
+      }
+      .animate-soft-pulse {
+        animation: soft-pulse 3s ease-in-out infinite;
+      }
     </style>
   <script type="importmap">
 {
@@ -36,7 +57,7 @@
 </script>
 <link rel="stylesheet" href="/index.css">
 </head>
-  <body class="bg-teal-50 selection:bg-pink-200 selection:text-pink-900">
+  <body class="bg-teal-50 selection:bg-pink-200 selection:text-pink-900 overflow-x-hidden">
     <div id="root"></div>
   <script type="module" src="/index.tsx"></script>
 </body>
