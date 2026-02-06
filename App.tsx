@@ -29,7 +29,22 @@ import {
   MessageSquarePlus,
   ChevronLeft,
   X,
-  RefreshCcw
+  RefreshCcw,
+  Smile,
+  Music,
+  Utensils,
+  Laugh,
+  Coffee,
+  Handshake,
+  Dna,
+  HeartHandshake,
+  Wind,
+  Mic2,
+  Brush,
+  Moon,
+  Trophy,
+  ChevronRightCircle,
+  Link2
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { View, HomeTab, CheckInModel, JoyPlan, Turn, AIInsight, DateIdea, PartnerNames, DualReflection } from './types';
@@ -44,6 +59,30 @@ const MARRIAGE_QUOTES = [
   "Your words are the bricks that build the home your heart lives in.",
   "Marriage is less about finding the right person and more about being the right person.",
   "The greatest weakness of most humans is their hesitancy to tell others how much they love them while they are still alive."
+];
+
+const BIBLE_JOKES = [
+  { q: "Who was the best female financier in the Bible?", a: "Pharaoh's daughter. She went down to the bank of the Nile and drew out a little prophet!" },
+  { q: "Why didn't they play cards on the Ark?", a: "Because Noah was standing on the deck!" },
+  { q: "Who was the greatest financier in the Bible?", a: "Noah. He was floating his stock while everyone else was in liquidation!" },
+  { q: "What kind of man was Boaz before he married Ruth?", a: "Ruthless!" },
+  { q: "Why couldn't Jonah trust the ocean?", a: "Because he knew there was something fishy about it!" }
+];
+
+const PRACTICAL_TASKS = [
+  { id: 'smile', icon: <Smile className="text-pink-400" />, text: "Look into each other's eyes, smile, and say 'I love you'." },
+  { id: 'dish', icon: <Utensils className="text-orange-400" />, text: "Commit to making a favorite dish for each other this week." },
+  { id: 'song', icon: <Music className="text-purple-400" />, text: "Pick a song that represents 'us' and sing it together right now." },
+  { id: 'jokes', icon: <Laugh className="text-yellow-400" />, text: "Tell jokes to each other until the other person can't help but laugh." },
+  { id: 'hug', icon: <HeartHandshake className="text-rose-400" />, text: "Give each other a lingering 30-second hug without saying a word." },
+  { id: 'handshake', icon: <Handshake className="text-blue-400" />, text: "Create a secret 3-step handshake that only the two of you know." },
+  { id: 'coffee', icon: <Coffee className="text-amber-600" />, text: "Make a surprise cup of tea or coffee for your partner exactly how they like it." },
+  { id: 'breaths', icon: <Wind className="text-cyan-400" />, text: "Take 5 deep synchronised breaths together to align your nervous systems." },
+  { id: 'whisper', icon: <Mic2 className="text-indigo-400" />, text: "Whisper one secret compliment in your partner's ear that you've never said before." },
+  { id: 'poem', icon: <Brush className="text-green-400" />, text: "Write a two-line poem for each other on a scrap of paper or a napkin." },
+  { id: 'massage', icon: <Moon className="text-slate-500" />, text: "Give each other a 1-minute back or neck massage to release today's tension." },
+  { id: 'memory', icon: <Star className="text-yellow-500" />, text: "Share a specific memory of a time you felt deeply proud of your partner." },
+  { id: 'forehead', icon: <Dna className="text-pink-500" />, text: "Stand forehead-to-forehead for one minute and breathe in silence." }
 ];
 
 export default function App() {
@@ -85,12 +124,19 @@ export default function App() {
   const [isExporting, setIsExporting] = useState(false);
   const [joySubTab, setJoySubTab] = useState<'planner' | 'summary'>('planner');
 
-  const [activeCalendarMenu, setActiveCalendarMenu] = useState<number | string | null>(null);
   const [logoClicked, setLogoClicked] = useState(false);
 
   // Feelings Wheel State
   const [wheelPath, setWheelPath] = useState<string[]>([]);
   const [isZooming, setIsZooming] = useState(false);
+  const [hasPickedEmotion, setHasPickedEmotion] = useState(false);
+
+  // Practical Task & Jokes State
+  const [currentTaskIndex, setCurrentTaskIndex] = useState(() => Math.floor(Math.random() * PRACTICAL_TASKS.length));
+  const [isShufflingTask, setIsShufflingTask] = useState(false);
+  const [currentBibleJokeIndex, setCurrentBibleJokeIndex] = useState(0);
+  const [jokeScores, setJokeScores] = useState({ p1: 0, p2: 0 });
+  const [showJokeAnswer, setShowJokeAnswer] = useState(false);
 
   const currentQuote = useMemo(() => {
     return MARRIAGE_QUOTES[Math.floor(Math.random() * MARRIAGE_QUOTES.length)];
@@ -148,6 +194,7 @@ export default function App() {
     setTurn('p1');
     setInsight(null);
     setWheelPath([]);
+    setHasPickedEmotion(false);
     setCurrentView('checkin');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -155,6 +202,7 @@ export default function App() {
   const handleNextStep = async () => {
     if (!selectedModel) return;
     setWheelPath([]);
+    setHasPickedEmotion(false);
     if (turn === 'p1') {
       setTurn('p2');
     } else {
@@ -183,6 +231,7 @@ export default function App() {
 
   const handlePrevStep = () => {
     setWheelPath([]);
+    setHasPickedEmotion(false);
     if (turn === 'p2') setTurn('p1');
     else {
       if (currentStepIndex > 0) {
@@ -305,11 +354,26 @@ export default function App() {
     setCodeEntryInput('');
   };
 
+  const shuffleTask = () => {
+    setIsShufflingTask(true);
+    setTimeout(() => {
+      let nextIndex = Math.floor(Math.random() * PRACTICAL_TASKS.length);
+      while (nextIndex === currentTaskIndex && PRACTICAL_TASKS.length > 1) {
+        nextIndex = Math.floor(Math.random() * PRACTICAL_TASKS.length);
+      }
+      setCurrentTaskIndex(nextIndex);
+      setCurrentBibleJokeIndex(0);
+      setJokeScores({ p1: 0, p2: 0 });
+      setShowJokeAnswer(false);
+      setIsShufflingTask(false);
+    }, 300);
+  };
+
   const renderFeelingsWheel = () => {
     const currentDepth = wheelPath.length;
     let options: string[] = [];
-    let title = "Choose a core feeling";
-    let instruction = "Select the most accurate category below to continue.";
+    let title = hasPickedEmotion ? "Select any other dominant emotion?" : "Choose a core feeling";
+    let instruction = hasPickedEmotion ? "You can keep selecting or use the Next button to move on." : "Select the most accurate category below to begin.";
     let categoryColor = turn === 'p1' ? 'bg-teal-700' : 'bg-pink-500';
 
     if (currentDepth === 0) {
@@ -337,7 +401,8 @@ export default function App() {
         } else {
           const finalEmotion = `Feeling ${opt} (${wheelPath.join(' > ')})`;
           handleQuickPromptClick(finalEmotion);
-          setWheelPath([]);
+          setWheelPath([]); // Reset to core for multi-selection
+          setHasPickedEmotion(true);
         }
         setIsZooming(false);
       }, 200);
@@ -345,9 +410,9 @@ export default function App() {
 
     return (
       <div className="relative mb-8 overflow-hidden">
-        <div className="flex flex-col items-center mb-6">
-           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-1">{instruction}</p>
-           <h3 className="text-xl font-black text-white flex items-center gap-2">
+        <div className="flex flex-col items-center mb-6 text-center px-4">
+           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-1 leading-relaxed">{instruction}</p>
+           <h3 className="text-xl font-black text-white flex items-center gap-2 flex-wrap justify-center">
              {currentDepth > 0 && <span className="opacity-40">{wheelPath.join(' → ')}</span>}
              {title}
            </h3>
@@ -362,10 +427,10 @@ export default function App() {
         </div>
         
         {/* Circular Hub Layout */}
-        <div className={`relative flex items-center justify-center min-h-[300px] transition-all duration-300 transform ${isZooming ? 'scale-90 opacity-0' : 'scale-100 opacity-100'}`}>
+        <div className={`relative flex items-center justify-center min-h-[320px] transition-all duration-300 transform ${isZooming ? 'scale-90 opacity-0' : 'scale-100 opacity-100'}`}>
            <div className="absolute w-64 h-64 rounded-full bg-white/5 border border-white/5 backdrop-blur-sm animate-soft-pulse" />
            
-           <div className="relative w-full max-w-sm flex flex-wrap justify-center items-center gap-2 p-4">
+           <div className="relative w-full max-w-sm flex flex-wrap justify-center items-center gap-2 p-6">
               {options.map((opt, i) => {
                 const colors = FEELINGS_DATA[opt as keyof typeof FEELINGS_DATA]?.color || categoryColor;
                 return (
@@ -385,7 +450,7 @@ export default function App() {
         {currentDepth > 0 && (
           <div className="mt-4 flex justify-center animate-in fade-in slide-in-from-top-2">
             <button 
-              onClick={() => { handleQuickPromptClick(`Feeling ${wheelPath[wheelPath.length-1]}`); setWheelPath([]); }}
+              onClick={() => { handleQuickPromptClick(`Feeling ${wheelPath[wheelPath.length-1]}`); setWheelPath([]); setHasPickedEmotion(true); }}
               className="px-6 py-2.5 bg-white/10 border border-white/10 rounded-full text-[11px] font-black text-white hover:bg-white/20 transition-all flex items-center gap-2"
             >
               Choose "{wheelPath[wheelPath.length-1]}" <ArrowRight size={14} />
@@ -452,7 +517,7 @@ export default function App() {
 
         <div className="text-center pt-8">
           <button onClick={() => setCurrentView('walkthrough')} className="text-teal-600 font-black uppercase tracking-widest text-xs flex items-center gap-2 mx-auto hover:gap-4 transition-all">
-            <Info size={16} /> What's this about?
+            <Info size={16} /> How it works
           </button>
         </div>
       </div>
@@ -463,40 +528,39 @@ export default function App() {
     <div className="max-w-md mx-auto px-4 py-16 flex flex-col items-center min-h-screen animate-in fade-in slide-in-from-bottom-8 duration-700">
       <div className="bg-white/80 backdrop-blur-xl border border-teal-100 rounded-[3rem] p-10 shadow-2xl relative">
         <button onClick={dismissWalkthrough} className="absolute top-6 right-6 p-2 text-slate-300 hover:text-red-500 transition-all"><X size={24} /></button>
-        <div className="text-center mb-10">
-          <div className="w-20 h-20 bg-teal-900 text-white rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl animate-float"><Info size={36} /></div>
-          <h2 className="text-3xl font-black text-teal-900">The Guided Journey</h2>
+        <div className="text-center mb-12">
+          <div className="w-20 h-20 bg-teal-900 text-white rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl animate-float"><Sparkles size={36} /></div>
+          <h2 className="text-3xl font-black text-teal-900">Simple Connections</h2>
+          <p className="text-slate-500 font-medium mt-2">Intentional tools for your marriage.</p>
         </div>
         
-        <div className="space-y-8">
-          <div className="flex gap-4">
-            <div className="shrink-0 w-10 h-10 bg-pink-100 text-pink-600 rounded-xl flex items-center justify-center font-black">1</div>
+        <div className="space-y-10">
+          <div className="flex gap-5">
+            <div className="shrink-0 w-12 h-12 bg-pink-100 text-pink-600 rounded-2xl flex items-center justify-center shadow-sm">
+              <Heart size={24} fill="currentColor" className="animate-soft-pulse" />
+            </div>
             <div>
-              <h4 className="font-black text-teal-900 mb-1">Heart Syncs</h4>
-              <p className="text-sm text-slate-500 font-medium leading-relaxed">Structured frameworks for emotional connection and AI-powered relationship coaching.</p>
+              <h4 className="font-black text-teal-900 mb-1 text-lg">Heart Sync</h4>
+              <p className="text-sm text-slate-600 font-medium leading-relaxed">Ask questions honestly to each other. Choose from different formats to keep your conversations deep and fresh.</p>
             </div>
           </div>
-          <div className="flex gap-4">
-            <div className="shrink-0 w-10 h-10 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center font-black">2</div>
-            <div>
-              <h4 className="font-black text-teal-900 mb-1">Joy Planner</h4>
-              <p className="text-sm text-slate-500 font-medium leading-relaxed">Create a shared roadmap for dates, chores, and long-term goals using your shared code.</p>
+          
+          <div className="flex gap-5">
+            <div className="shrink-0 w-12 h-12 bg-teal-100 text-teal-600 rounded-2xl flex items-center justify-center shadow-sm">
+              <Calendar size={24} className="animate-float-delayed" />
             </div>
-          </div>
-          <div className="flex gap-4">
-            <div className="shrink-0 w-10 h-10 bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center font-black">3</div>
             <div>
-              <h4 className="font-black text-teal-900 mb-1">Daily Wisdom</h4>
-              <p className="text-sm text-slate-500 font-medium leading-relaxed">Returning users get daily inspiration for marriage and communication at the top of their dashboard.</p>
+              <h4 className="font-black text-teal-900 mb-1 text-lg">Joy Planner</h4>
+              <p className="text-sm text-slate-600 font-medium leading-relaxed">Plan together with a unique **Joy Code** that connects you both. Create healthy rhythms for dates, chores, and shared dreams.</p>
             </div>
           </div>
         </div>
 
         <button 
           onClick={dismissWalkthrough}
-          className="w-full mt-12 py-5 bg-teal-900 text-white rounded-2xl font-black text-xl hover:bg-black transition-all shadow-xl"
+          className="w-full mt-14 py-5 bg-teal-900 text-white rounded-[2rem] font-black text-xl hover:bg-black transition-all shadow-xl active:scale-95"
         >
-          Got It!
+          Let's Go
         </button>
       </div>
     </div>
@@ -633,14 +697,37 @@ export default function App() {
         <button onClick={handleLogoutCode} className="p-2 text-teal-400 hover:text-red-500 transition-colors font-bold flex items-center gap-1 text-xs">{joyCode ? 'Switch' : 'Set Code'} <LogOut size={16} /></button>
       </div>
       {!isCodeVerified ? (
-        <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-teal-100 text-center animate-in zoom-in-95">
-           <div className="w-16 h-16 bg-teal-100 text-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-6"><Key size={32} className="animate-float" /></div>
-           <h3 className="text-2xl font-black text-teal-900 mb-4">Set Your Shared Joy Code</h3>
-           <div className="space-y-4">
-              <input type="text" value={codeEntryInput} onChange={(e) => setCodeEntryInput(e.target.value.toUpperCase())} placeholder="ENTER CODE" className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-center font-black text-2xl tracking-[0.2em] text-teal-900 focus:outline-none focus:border-teal-500 transition-all"/>
-              <button onClick={handleVerifyCode} disabled={codeEntryInput.length < 4} className="w-full py-4 bg-teal-900 text-white rounded-2xl font-black text-lg hover:bg-black transition-all shadow-xl disabled:opacity-50">Join Room</button>
-              <button onClick={handleGenerateCode} className="w-full py-4 bg-white text-teal-900 border-2 border-teal-100 rounded-2xl font-black text-lg hover:bg-teal-50 transition-all flex items-center justify-center gap-3"><RefreshCw size={20} /> Generate New</button>
-           </div>
+        <div className="space-y-6">
+          <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-teal-100 text-center animate-in zoom-in-95">
+             <div className="w-16 h-16 bg-teal-100 text-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-6"><Key size={32} className="animate-float" /></div>
+             <h3 className="text-2xl font-black text-teal-900 mb-4">Set Your Shared Joy Code</h3>
+             <div className="space-y-4">
+                <input type="text" value={codeEntryInput} onChange={(e) => setCodeEntryInput(e.target.value.toUpperCase())} placeholder="ENTER CODE" className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-center font-black text-2xl tracking-[0.2em] text-teal-900 focus:outline-none focus:border-teal-500 transition-all"/>
+                <button onClick={handleVerifyCode} disabled={codeEntryInput.length < 4} className="w-full py-4 bg-teal-900 text-white rounded-2xl font-black text-lg hover:bg-black transition-all shadow-xl disabled:opacity-50">Join Room</button>
+                <button onClick={handleGenerateCode} className="w-full py-4 bg-white text-teal-900 border-2 border-teal-100 rounded-2xl font-black text-lg hover:bg-teal-50 transition-all flex items-center justify-center gap-3"><RefreshCw size={20} /> Generate New</button>
+             </div>
+          </div>
+          
+          <div className="bg-teal-900 text-white p-8 rounded-[2.5rem] shadow-xl border border-white/10 animate-in fade-in slide-in-from-bottom-4">
+             <div className="flex items-center gap-3 mb-4">
+               <Info size={24} className="text-teal-400" />
+               <h4 className="font-black text-xl">What is a Joy Code?</h4>
+             </div>
+             <ul className="space-y-4">
+               <li className="flex gap-4 items-start">
+                 <div className="shrink-0 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><Link2 size={16} className="text-teal-400" /></div>
+                 <p className="text-sm font-medium leading-relaxed">It's a simple, unique code that **connects both of you** in this digital space.</p>
+               </li>
+               <li className="flex gap-4 items-start">
+                 <div className="shrink-0 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><Zap size={16} className="text-teal-400" /></div>
+                 <p className="text-sm font-medium leading-relaxed">By using the same code, you can **plan together** and see each other's updates in real-time.</p>
+               </li>
+               <li className="flex gap-4 items-start">
+                 <div className="shrink-0 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><Sparkles size={16} className="text-teal-400" /></div>
+                 <p className="text-sm font-medium leading-relaxed">Codes are **random and unique** to your partnership—your private roadmap.</p>
+               </li>
+             </ul>
+          </div>
         </div>
       ) : (
         <>
@@ -773,6 +860,9 @@ export default function App() {
                                currentQuestion.toLowerCase().includes('soul') || 
                                currentQuestion.toLowerCase().includes('feeling — really');
 
+    const currentNoteText = dualNotes[currentStepIndex]?.[turn] || '';
+    const isNoteEntered = currentNoteText.trim().length > 0;
+
     return (
       <div className="max-w-xl mx-auto px-4 py-6 flex flex-col min-h-screen">
         <div className="flex items-center justify-between mb-6">
@@ -803,8 +893,11 @@ export default function App() {
                     <p className="text-base font-black text-white">{currentName}</p>
                   </div>
                </div>
-               <button onClick={handleNextStep} className="px-6 py-2.5 rounded-2xl font-black text-white shadow-xl flex items-center justify-center gap-2 transition-all active:scale-95 border border-white/20 bg-white/10 hover:bg-white/20 text-xs">
-                {isLastAction ? 'Finish' : 'Next'} <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+               <button 
+                  onClick={handleNextStep} 
+                  className={`px-6 py-2.5 rounded-2xl font-black shadow-xl flex items-center justify-center gap-2 transition-all active:scale-95 border text-xs ${isNoteEntered ? 'bg-white text-teal-900 border-white scale-105 shadow-white/20' : 'bg-white/10 text-white border-white/20 hover:bg-white/20'}`}
+               >
+                {isLastAction ? 'Finish' : 'Next'} <ArrowRight size={14} className={isNoteEntered ? 'translate-x-1' : ''} />
                </button>
             </div>
 
@@ -816,8 +909,8 @@ export default function App() {
                 </div>
                 {isEmotionalQuestion && (
                   <button 
-                    onClick={() => setWheelPath([])} 
-                    className="p-2 bg-white/10 rounded-full text-white/40 hover:text-white"
+                    onClick={() => { setWheelPath([]); setHasPickedEmotion(false); }} 
+                    className="p-2 bg-white/10 rounded-full text-white/40 hover:text-white transition-all"
                     title="Reset Wheel"
                   >
                     <RefreshCcw size={16} />
@@ -841,10 +934,10 @@ export default function App() {
                 </div>
               )}
 
-              <div className="text-left mt-auto flex-1">
+              <div className="text-left mt-auto flex-1 flex flex-col gap-6">
                 <textarea 
                   ref={textareaRef}
-                  value={dualNotes[currentStepIndex]?.[turn] || ''} 
+                  value={currentNoteText} 
                   onChange={(e) => { 
                     const currentNotes = dualNotes[currentStepIndex] || { p1: '', p2: '' }; 
                     setDualNotes({ ...dualNotes, [currentStepIndex]: { ...currentNotes, [turn]: e.target.value } }); 
@@ -852,6 +945,13 @@ export default function App() {
                   placeholder={`Speak from your heart, ${currentName}... or share more details here.`} 
                   className="w-full bg-white/5 border-2 border-white/10 rounded-2xl p-4 text-white placeholder:text-white/20 focus:outline-none focus:bg-white/10 focus:border-white/20 transition-all resize-none min-h-[160px] h-full font-medium text-sm leading-relaxed"
                 />
+
+                <button 
+                  onClick={handleNextStep} 
+                  className={`w-full py-5 rounded-3xl font-black text-lg transition-all active:scale-95 flex items-center justify-center gap-3 shadow-2xl ${isNoteEntered ? 'bg-white text-teal-900 scale-[1.02] shadow-white/10' : 'bg-white/10 text-white/50 border-2 border-white/5 hover:bg-white/15'}`}
+                >
+                  {isLastAction ? 'Finalize Sync' : 'Go to Next Step'} <ArrowRight size={22} className={isNoteEntered ? 'translate-x-1 animate-soft-pulse' : ''} />
+                </button>
               </div>
             </div>
           </div>
@@ -862,6 +962,18 @@ export default function App() {
 
   const renderSummary = () => {
     if (!selectedModel) return null;
+    const task = PRACTICAL_TASKS[currentTaskIndex];
+    const isJokeTask = task.id === 'jokes';
+
+    const handleJokeScore = (target: 'p1' | 'p2') => {
+      setJokeScores(prev => ({ ...prev, [target]: prev[target] + 1 }));
+    };
+
+    const nextJoke = () => {
+      setCurrentBibleJokeIndex((prev) => (prev + 1) % BIBLE_JOKES.length);
+      setShowJokeAnswer(false);
+    };
+
     return (
       <div className="max-w-xl mx-auto px-4 py-12 pb-32">
         <div className="flex items-center justify-between mb-10"><button onClick={goHome} className="p-3 bg-white text-pink-500 rounded-2xl border border-pink-100 shadow-sm"><Home size={22} className="animate-float" /></button><h2 className="text-2xl font-black text-teal-900 tracking-tight">Sync Summary</h2><div className="flex gap-2">
@@ -869,6 +981,94 @@ export default function App() {
           <button onClick={copySummary} className="p-3 bg-white text-pink-500 rounded-2xl border border-pink-100 shadow-sm">{copied ? <CheckCircle size={20} className="text-green-500 animate-soft-pulse" /> : <Copy size={20} />}</button>
         </div></div>
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          
+          {/* Practical Love Task Section */}
+          <div className="bg-white rounded-[3rem] p-10 border-4 border-pink-50 shadow-xl overflow-hidden relative">
+            <div className="absolute -right-8 -top-8 p-12 text-pink-100 opacity-20 transform rotate-12"><Sparkles size={120} fill="currentColor" /></div>
+            <div className="relative z-10 text-center">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-pink-100 text-pink-600 rounded-full text-[10px] font-black uppercase tracking-widest mb-6 shadow-sm">
+                <Zap size={14} fill="currentColor" /> Practical Connection Task
+              </div>
+              <h3 className="text-3xl serif italic text-teal-900 mb-8">Ready to act on your love?</h3>
+              
+              <div className={`flex flex-col items-center gap-6 transition-all duration-300 ${isShufflingTask ? 'scale-90 opacity-0' : 'scale-100 opacity-100'}`}>
+                <div className="w-20 h-20 rounded-3xl bg-pink-50 border-2 border-pink-100 flex items-center justify-center shadow-inner animate-float">
+                  {React.cloneElement(task.icon as React.ReactElement, { size: 40 })}
+                </div>
+                <p className="text-xl text-teal-900 font-bold leading-relaxed max-w-sm">"{task.text}"</p>
+                
+                {/* Conditional Jokes UI */}
+                {isJokeTask && (
+                  <div className="w-full bg-yellow-50/50 border-2 border-yellow-100 rounded-[2.5rem] p-8 mt-4 animate-in zoom-in-95">
+                    <div className="flex items-center justify-center gap-2 mb-6">
+                      <Laugh size={24} className="text-yellow-600 animate-soft-pulse" />
+                      <h4 className="font-black text-yellow-800 text-lg">Crack Each Other Up</h4>
+                    </div>
+                    
+                    <div className="mb-8 p-6 bg-white rounded-3xl shadow-sm min-h-[140px] flex flex-col justify-center border border-yellow-100">
+                      <p className="text-[10px] font-black text-yellow-500 uppercase tracking-widest mb-2">Bible Joke #{currentBibleJokeIndex + 1}</p>
+                      <p className="text-lg font-bold text-teal-900 mb-4 leading-tight">{BIBLE_JOKES[currentBibleJokeIndex].q}</p>
+                      
+                      {showJokeAnswer ? (
+                         <p className="text-lg font-black italic text-pink-600 animate-in fade-in slide-in-from-top-2">{BIBLE_JOKES[currentBibleJokeIndex].a}</p>
+                      ) : (
+                         <button 
+                            onClick={() => setShowJokeAnswer(true)}
+                            className="text-xs font-black text-yellow-600 uppercase tracking-widest hover:text-yellow-700 underline underline-offset-4"
+                          >
+                           Show the Punchline
+                         </button>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                      <button onClick={() => handleJokeScore('p1')} className="p-4 bg-teal-900 text-white rounded-2xl shadow-lg active:scale-95 transition-all">
+                        <div className="flex items-center justify-center gap-2 mb-1">
+                          <Smile size={18} />
+                          <span className="text-[10px] font-black uppercase tracking-widest">{names.p1} Laughed!</span>
+                        </div>
+                        <p className="text-2xl font-black">{jokeScores.p1}</p>
+                      </button>
+                      <button onClick={() => handleJokeScore('p2')} className="p-4 bg-pink-600 text-white rounded-2xl shadow-lg active:scale-95 transition-all">
+                        <div className="flex items-center justify-center gap-2 mb-1">
+                          <Smile size={18} />
+                          <span className="text-[10px] font-black uppercase tracking-widest">{names.p2} Laughed!</span>
+                        </div>
+                        <p className="text-2xl font-black">{jokeScores.p2}</p>
+                      </button>
+                    </div>
+
+                    <button 
+                      onClick={nextJoke}
+                      className="w-full py-4 bg-white border-2 border-yellow-200 text-yellow-700 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-yellow-100 transition-all mb-4 shadow-sm"
+                    >
+                      <ChevronRightCircle size={20} /> Next Bible Joke
+                    </button>
+
+                    <div className="pt-4 border-t border-yellow-100">
+                       <div className="flex items-center justify-center gap-2">
+                         <Trophy size={16} className="text-yellow-600" />
+                         <span className="text-[9px] font-black uppercase tracking-[0.2em] text-yellow-600">Laughter Leaderboard</span>
+                       </div>
+                       <p className="text-xs font-bold text-yellow-800 mt-1">
+                         {jokeScores.p1 > jokeScores.p2 ? `${names.p1} is winning!` : jokeScores.p2 > jokeScores.p1 ? `${names.p2} is winning!` : "It's a giggle draw!"}
+                       </p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex flex-col gap-3 w-full">
+                  <button 
+                    onClick={shuffleTask}
+                    className="flex items-center justify-center gap-2 py-3 px-6 bg-slate-100 text-slate-600 rounded-2xl font-black text-sm hover:bg-slate-200 transition-all active:scale-95"
+                  >
+                    <RefreshCw size={16} className={isShufflingTask ? 'animate-spin' : ''} /> Try another task
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {loadingInsight ? (
             <div className="bg-white rounded-[3rem] p-12 text-center shadow-xl border border-pink-100"><div className="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-float"><RefreshCw size={40} className="text-pink-500 animate-spin" /></div><h3 className="text-2xl font-black text-teal-900 mb-2">Generating Insights...</h3></div>
           ) : insight && (
@@ -885,14 +1085,14 @@ export default function App() {
                </div>
              ))}
           </div>
-          <button onClick={goHome} className="w-full py-6 bg-pink-900 text-white rounded-3xl font-black text-xl hover:bg-black transition-all shadow-xl flex items-center justify-center gap-3">Done <ArrowRight size={24} /></button>
+          <button onClick={goHome} className="w-full py-6 bg-teal-900 text-white rounded-[2.5rem] font-black text-xl hover:bg-black transition-all shadow-xl flex items-center justify-center gap-3">Complete & Go Home <ArrowRight size={24} /></button>
         </div>
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-teal-50 selection:bg-pink-100 selection:text-teal-900" onClick={() => { setActiveCalendarMenu(null); setLogoClicked(false); }}>
+    <div className="min-h-screen bg-teal-50 selection:bg-pink-100 selection:text-teal-900" onClick={() => { setLogoClicked(false); }}>
       {currentView === 'onboarding' && renderOnboarding()}
       {currentView === 'post-onboarding-choice' && renderPostOnboardingChoice()}
       {currentView === 'walkthrough' && renderWalkthrough()}
