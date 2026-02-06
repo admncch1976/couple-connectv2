@@ -28,11 +28,12 @@ import {
   Layers,
   MessageSquarePlus,
   ChevronLeft,
-  X
+  X,
+  RefreshCcw
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { View, HomeTab, CheckInModel, JoyPlan, Turn, AIInsight, DateIdea, PartnerNames, DualReflection } from './types';
-import { CHECKIN_MODELS, JOY_SUGGESTIONS } from './constants';
+import { CHECKIN_MODELS, JOY_SUGGESTIONS, FEELINGS_DATA } from './constants';
 import { geminiService } from './geminiService';
 
 const MARRIAGE_QUOTES = [
@@ -87,6 +88,10 @@ export default function App() {
   const [activeCalendarMenu, setActiveCalendarMenu] = useState<number | string | null>(null);
   const [logoClicked, setLogoClicked] = useState(false);
 
+  // Feelings Wheel State
+  const [wheelPath, setWheelPath] = useState<string[]>([]);
+  const [isZooming, setIsZooming] = useState(false);
+
   const currentQuote = useMemo(() => {
     return MARRIAGE_QUOTES[Math.floor(Math.random() * MARRIAGE_QUOTES.length)];
   }, []);
@@ -98,7 +103,7 @@ export default function App() {
       ? step.quickThoughts 
       : ["Feeling peaceful", "A bit stressed", "Grateful", "Ready to listen"];
     
-    return [...source].sort(() => Math.random() - 0.5).slice(0, 6);
+    return [...source].sort(() => Math.random() - 0.5).slice(0, 8);
   }, [selectedModel, currentStepIndex, turn]);
 
   useEffect(() => {
@@ -142,12 +147,14 @@ export default function App() {
     setDualNotes({});
     setTurn('p1');
     setInsight(null);
+    setWheelPath([]);
     setCurrentView('checkin');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleNextStep = async () => {
     if (!selectedModel) return;
+    setWheelPath([]);
     if (turn === 'p1') {
       setTurn('p2');
     } else {
@@ -175,6 +182,7 @@ export default function App() {
   };
 
   const handlePrevStep = () => {
+    setWheelPath([]);
     if (turn === 'p2') setTurn('p1');
     else {
       if (currentStepIndex > 0) {
@@ -297,6 +305,97 @@ export default function App() {
     setCodeEntryInput('');
   };
 
+  const renderFeelingsWheel = () => {
+    const currentDepth = wheelPath.length;
+    let options: string[] = [];
+    let title = "Choose a core feeling";
+    let instruction = "Select the most accurate category below to continue.";
+    let categoryColor = turn === 'p1' ? 'bg-teal-700' : 'bg-pink-500';
+
+    if (currentDepth === 0) {
+      options = Object.keys(FEELINGS_DATA);
+    } else if (currentDepth === 1) {
+      const core = wheelPath[0] as keyof typeof FEELINGS_DATA;
+      options = Object.keys(FEELINGS_DATA[core].secondary);
+      title = `${core}`;
+      instruction = "Narrow it down. Which one resonates most?";
+      categoryColor = FEELINGS_DATA[core].color;
+    } else if (currentDepth === 2) {
+      const core = wheelPath[0] as keyof typeof FEELINGS_DATA;
+      const secondary = wheelPath[1] as string;
+      options = (FEELINGS_DATA[core].secondary as any)[secondary];
+      title = `${secondary}`;
+      instruction = "Final choice. Pick the exact emotion.";
+      categoryColor = FEELINGS_DATA[core].color;
+    }
+
+    const handleSelect = (opt: string) => {
+      setIsZooming(true);
+      setTimeout(() => {
+        if (currentDepth < 2) {
+          setWheelPath([...wheelPath, opt]);
+        } else {
+          const finalEmotion = `Feeling ${opt} (${wheelPath.join(' > ')})`;
+          handleQuickPromptClick(finalEmotion);
+          setWheelPath([]);
+        }
+        setIsZooming(false);
+      }, 200);
+    };
+
+    return (
+      <div className="relative mb-8 overflow-hidden">
+        <div className="flex flex-col items-center mb-6">
+           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-1">{instruction}</p>
+           <h3 className="text-xl font-black text-white flex items-center gap-2">
+             {currentDepth > 0 && <span className="opacity-40">{wheelPath.join(' → ')}</span>}
+             {title}
+           </h3>
+           {currentDepth > 0 && (
+             <button 
+              onClick={() => setWheelPath(wheelPath.slice(0, -1))}
+              className="mt-2 text-[10px] font-black text-white/40 hover:text-white flex items-center gap-1 transition-all"
+             >
+               <ChevronLeft size={12} /> Go back one level
+             </button>
+           )}
+        </div>
+        
+        {/* Circular Hub Layout */}
+        <div className={`relative flex items-center justify-center min-h-[300px] transition-all duration-300 transform ${isZooming ? 'scale-90 opacity-0' : 'scale-100 opacity-100'}`}>
+           <div className="absolute w-64 h-64 rounded-full bg-white/5 border border-white/5 backdrop-blur-sm animate-soft-pulse" />
+           
+           <div className="relative w-full max-w-sm flex flex-wrap justify-center items-center gap-2 p-4">
+              {options.map((opt, i) => {
+                const colors = FEELINGS_DATA[opt as keyof typeof FEELINGS_DATA]?.color || categoryColor;
+                return (
+                  <button
+                    key={`${currentDepth}-${opt}`}
+                    onClick={() => handleSelect(opt)}
+                    className={`px-5 py-3 rounded-[2rem] text-xs font-black transition-all active:scale-90 border border-white/10 shadow-xl ${colors} text-white hover:scale-105 hover:brightness-110 animate-in zoom-in-50 duration-300`}
+                    style={{ animationDelay: `${i * 40}ms` }}
+                  >
+                    {opt}
+                  </button>
+                );
+              })}
+           </div>
+        </div>
+
+        {currentDepth > 0 && (
+          <div className="mt-4 flex justify-center animate-in fade-in slide-in-from-top-2">
+            <button 
+              onClick={() => { handleQuickPromptClick(`Feeling ${wheelPath[wheelPath.length-1]}`); setWheelPath([]); }}
+              className="px-6 py-2.5 bg-white/10 border border-white/10 rounded-full text-[11px] font-black text-white hover:bg-white/20 transition-all flex items-center gap-2"
+            >
+              Choose "{wheelPath[wheelPath.length-1]}" <ArrowRight size={14} />
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const renderOnboarding = () => (
     <div className="max-w-md mx-auto px-4 py-16 flex flex-col min-h-screen">
       <div className="text-center mb-10 animate-in fade-in slide-in-from-top-4 duration-700">
@@ -337,7 +436,7 @@ export default function App() {
             <div className="p-3 bg-pink-100 text-pink-600 rounded-2xl group-hover:bg-pink-600 group-hover:text-white transition-all"><Heart size={28} className="group-hover:animate-float" /></div>
             <h3 className="text-2xl font-black text-teal-900">Start Heart Sync</h3>
           </div>
-          <p className="text-slate-500 font-medium leading-relaxed">Structured pink-themed check-ins to grow emotional intimacy.</p>
+          <p className="text-slate-500 font-medium leading-relaxed">Structured frameworks for emotional connection and AI-powered relationship coaching.</p>
         </button>
 
         <button 
@@ -348,7 +447,7 @@ export default function App() {
             <div className="p-3 bg-teal-100 text-teal-600 rounded-2xl group-hover:bg-teal-900 group-hover:text-white transition-all"><Sparkles size={28} className="group-hover:animate-float-delayed" /></div>
             <h3 className="text-2xl font-black text-teal-900">Open Joy Planner</h3>
           </div>
-          <p className="text-slate-500 font-medium leading-relaxed">Map out shared dreams and habits with your partner in Teal.</p>
+          <p className="text-slate-500 font-medium leading-relaxed">Map out shared dreams and habits with your partner.</p>
         </button>
 
         <div className="text-center pt-8">
@@ -373,14 +472,14 @@ export default function App() {
           <div className="flex gap-4">
             <div className="shrink-0 w-10 h-10 bg-pink-100 text-pink-600 rounded-xl flex items-center justify-center font-black">1</div>
             <div>
-              <h4 className="font-black text-teal-900 mb-1">Heart Syncs (Pink)</h4>
+              <h4 className="font-black text-teal-900 mb-1">Heart Syncs</h4>
               <p className="text-sm text-slate-500 font-medium leading-relaxed">Structured frameworks for emotional connection and AI-powered relationship coaching.</p>
             </div>
           </div>
           <div className="flex gap-4">
             <div className="shrink-0 w-10 h-10 bg-teal-100 text-teal-600 rounded-xl flex items-center justify-center font-black">2</div>
             <div>
-              <h4 className="font-black text-teal-900 mb-1">Joy Planner (Teal)</h4>
+              <h4 className="font-black text-teal-900 mb-1">Joy Planner</h4>
               <p className="text-sm text-slate-500 font-medium leading-relaxed">Create a shared roadmap for dates, chores, and long-term goals using your shared code.</p>
             </div>
           </div>
@@ -405,7 +504,6 @@ export default function App() {
 
   const renderHome = () => (
     <div className="max-w-xl mx-auto px-4 pt-8 pb-32">
-      {/* Dynamic Wisdom Quote at the Top */}
       {!isFirstTime && (
         <div className="mb-10 px-6 py-4 bg-white/60 backdrop-blur-sm border border-teal-100 rounded-2xl text-center shadow-sm animate-in fade-in slide-in-from-top-4 duration-1000">
           <p className="text-teal-900 font-medium italic text-sm leading-relaxed">"{currentQuote}"</p>
@@ -450,7 +548,7 @@ export default function App() {
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
           <div className="flex items-center gap-3 mb-4 px-1">
             <div className="p-2 bg-pink-100 rounded-lg text-pink-600"><Heart size={20} fill="currentColor" className="animate-float" /></div>
-            <h2 className="text-xl font-black text-teal-900 tracking-tight">Heart Sync (Pink)</h2>
+            <h2 className="text-xl font-black text-teal-900 tracking-tight">Heart Sync</h2>
           </div>
           <div className="grid grid-cols-1 gap-8">
             {CHECKIN_MODELS.map(model => {
@@ -483,7 +581,7 @@ export default function App() {
         <div className="space-y-6">
           <div className="flex items-center gap-3 mb-4 px-1">
             <div className="p-2 bg-teal-100 rounded-lg text-teal-600"><Sparkles size={20} fill="currentColor" className="animate-float-delayed" /></div>
-            <h2 className="text-xl font-black text-teal-900 tracking-tight">Joy Planner (Teal)</h2>
+            <h2 className="text-xl font-black text-teal-900 tracking-tight">Joy Planner</h2>
           </div>
           <div className="flex items-center gap-2 p-1 bg-white border border-teal-100 rounded-2xl shadow-sm mb-4">
             <button onClick={() => setJoySubTab('planner')} className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-all ${joySubTab === 'planner' ? 'bg-teal-900 text-white shadow-lg' : 'text-teal-600 hover:bg-teal-50'}`}><Plus size={18} /> Planner</button>
@@ -551,33 +649,105 @@ export default function App() {
               <button key={tf} onClick={() => { setJoyTimeframe(tf); setAiDateSuggestions([]); }} className={`px-6 py-2.5 rounded-2xl whitespace-nowrap text-sm font-bold transition-all border shadow-sm ${joyTimeframe === tf ? 'bg-teal-900 text-white border-teal-950' : 'bg-white text-slate-500 border-teal-100 hover:bg-teal-50'}`}>{tf}</button>
             ))}
           </div>
+          
           <div className="bg-white rounded-[2.5rem] shadow-xl border border-teal-100 p-8 mb-8">
-            <div className="flex items-center justify-between mb-8"><div className="flex items-center gap-4"><div className="w-12 h-12 bg-pink-100 rounded-2xl flex items-center justify-center text-pink-600"><Sparkles size={24} className="animate-float" /></div><div><h2 className="text-2xl font-extrabold text-teal-900 tracking-tight">Plan {joyTimeframe} Joy</h2></div></div><button onClick={fetchAIDateIdeas} disabled={loadingDates} className="p-3 bg-teal-50 text-teal-700 rounded-2xl hover:bg-teal-100 transition-all disabled:opacity-50">{loadingDates ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Zap size={20} fill="currentColor" />}</button></div>
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-pink-100 rounded-2xl flex items-center justify-center text-pink-600">
+                  <Sparkles size={24} className="animate-float" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-extrabold text-teal-900 tracking-tight">Plan {joyTimeframe} Joy</h2>
+                </div>
+              </div>
+              <button onClick={fetchAIDateIdeas} disabled={loadingDates} className="p-3 bg-teal-50 text-teal-700 rounded-2xl hover:bg-teal-100 transition-all disabled:opacity-50">
+                {loadingDates ? <RefreshCw className="w-5 h-5 animate-spin" /> : <Zap size={20} fill="currentColor" />}
+              </button>
+            </div>
+            
             <div className="space-y-4 mb-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="relative"><input type="text" value={joyInput} onChange={(e) => setJoyInput(e.target.value)} placeholder="What activity?" className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 pl-12 text-slate-700 focus:outline-none focus:ring-4 focus:ring-teal-100 transition-all font-medium" /><Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} /></div>
-                <div className="relative"><input type="text" value={joyWhen} onChange={(e) => setJoyWhen(e.target.value)} placeholder="When?" className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 pl-12 text-slate-700 focus:outline-none focus:ring-4 focus:ring-teal-100 transition-all font-medium" /><Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} /></div>
+                <div className="relative">
+                  <input type="text" value={joyInput} onChange={(e) => setJoyInput(e.target.value)} placeholder="Activity (e.g. Prayer Walk)" className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 pl-12 text-slate-700 focus:outline-none focus:ring-4 focus:ring-teal-100 transition-all font-medium" />
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                </div>
+                <div className="relative">
+                  <input type="text" value={joyWhen} onChange={(e) => setJoyWhen(e.target.value)} placeholder="Time/Date/Year" className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 pl-12 text-slate-700 focus:outline-none focus:ring-4 focus:ring-teal-100 transition-all font-medium" />
+                  <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                </div>
               </div>
-              <button onClick={() => addJoyPlan(joyInput, joyWhen)} disabled={!joyInput} className="w-full py-4 rounded-2xl font-extrabold text-white bg-teal-800 hover:bg-teal-900 disabled:opacity-50 transition-all shadow-lg flex items-center justify-center gap-2 text-lg"><Plus size={22} /> Add to Plan</button>
+              <button onClick={() => addJoyPlan(joyInput, joyWhen)} disabled={!joyInput} className="w-full py-4 rounded-2xl font-extrabold text-white bg-teal-800 hover:bg-teal-900 disabled:opacity-50 transition-all shadow-lg flex items-center justify-center gap-2 text-lg">
+                <Plus size={22} /> Add to Plan
+              </button>
             </div>
+
+            {/* Structured Ideas Section - Mix n Match */}
+            <div className="mb-4">
+               <p className="text-[10px] font-black text-teal-400 uppercase tracking-[0.2em] mb-4">Biblical & Cultural Ideas</p>
+               <div className="grid grid-cols-2 gap-4">
+                  {/* Activities Column */}
+                  <div className="space-y-2">
+                    <p className="text-[9px] font-black uppercase text-teal-900 opacity-30 mb-1 ml-1">Activities</p>
+                    <div className="max-h-[300px] overflow-y-auto no-scrollbar space-y-1.5 p-1">
+                       {JOY_SUGGESTIONS[joyTimeframe]?.activities.map((act, idx) => (
+                         <button 
+                            key={idx} 
+                            onClick={() => setJoyInput(act)}
+                            className={`w-full text-left p-2.5 rounded-xl border text-[11px] font-bold transition-all active:scale-95 ${joyInput === act ? 'bg-teal-900 text-white border-teal-950 shadow-md' : 'bg-white text-teal-900 border-teal-50 hover:border-pink-200 hover:bg-pink-50/30'}`}
+                         >
+                           {act}
+                         </button>
+                       ))}
+                    </div>
+                  </div>
+
+                  {/* Times Column */}
+                  <div className="space-y-2">
+                    <p className="text-[9px] font-black uppercase text-teal-900 opacity-30 mb-1 ml-1">Suggested Times</p>
+                    <div className="max-h-[300px] overflow-y-auto no-scrollbar space-y-1.5 p-1">
+                       {JOY_SUGGESTIONS[joyTimeframe]?.times.map((time, idx) => (
+                         <button 
+                            key={idx} 
+                            onClick={() => setJoyWhen(time)}
+                            className={`w-full text-left p-2.5 rounded-xl border text-[11px] font-medium italic transition-all active:scale-95 ${joyWhen === time ? 'bg-pink-600 text-white border-pink-700 shadow-md' : 'bg-slate-50 text-slate-500 border-slate-100 hover:border-teal-200 hover:bg-teal-50/30'}`}
+                         >
+                           {time}
+                         </button>
+                       ))}
+                    </div>
+                  </div>
+               </div>
+            </div>
+
             {aiDateSuggestions.length > 0 && (
-              <div className="mb-8 p-6 bg-teal-50/50 rounded-[2rem] border border-teal-100 animate-in fade-in zoom-in-95">
+              <div className="mb-8 p-6 bg-teal-50/50 rounded-[2rem] border border-teal-100 animate-in fade-in zoom-in-95 mt-8">
                 <p className="text-[10px] font-black text-teal-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2"><Zap size={14} fill="currentColor" /> AI Date Ideas</p>
                 <div className="grid grid-cols-1 gap-4">
                   {aiDateSuggestions.map((idea, idx) => (
                     <button key={idx} onClick={() => { setJoyInput(idea.title); setJoyWhen('Special Date'); }} className="bg-white p-5 rounded-2xl text-left border border-teal-100 hover:shadow-md transition-all group">
-                      <p className="font-bold text-teal-900 mb-1 group-hover:text-pink-600">{idea.title}</p><p className="text-xs text-slate-500 leading-relaxed mb-1">{idea.description}</p>
+                      <p className="font-bold text-teal-900 mb-1 group-hover:text-teal-600">{idea.title}</p><p className="text-xs text-slate-500 leading-relaxed mb-1">{idea.description}</p>
                     </button>
                   ))}
                 </div>
               </div>
             )}
           </div>
+
           <div className="space-y-4">
             {joyPlans[joyTimeframe].map(plan => (
-              <div key={plan.id} className="bg-white p-5 rounded-3xl shadow-sm border border-teal-100 flex items-center justify-between hover:shadow-md transition-all">
-                <div className="flex items-center gap-4"><div className="w-10 h-10 bg-teal-50 rounded-xl flex items-center justify-center text-teal-600"><CheckCircle size={20} className="animate-soft-pulse" /></div><div><p className="font-bold text-teal-900 text-lg">{plan.activity}</p>{plan.timeInfo && <p className="text-sm text-teal-500 font-bold mt-0.5">{plan.timeInfo}</p>}</div></div>
-                <button onClick={() => removeJoyPlan(plan.id)} className="text-slate-200 hover:text-red-500 transition-all p-3 hover:bg-red-50 rounded-2xl"><Trash2 size={20} /></button>
+              <div key={plan.id} className="bg-white p-5 rounded-3xl shadow-sm border border-teal-100 flex items-center justify-between hover:shadow-md transition-all group">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 bg-teal-50 rounded-xl flex items-center justify-center text-teal-600 group-hover:bg-teal-900 group-hover:text-white transition-all">
+                    <CheckCircle size={20} className="animate-soft-pulse" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-teal-900 text-lg">{plan.activity}</p>
+                    {plan.timeInfo && <p className="text-sm text-teal-500 font-bold mt-0.5">{plan.timeInfo}</p>}
+                  </div>
+                </div>
+                <button onClick={() => removeJoyPlan(plan.id)} className="text-slate-200 hover:text-red-500 transition-all p-3 hover:bg-red-50 rounded-2xl">
+                  <Trash2 size={20} />
+                </button>
               </div>
             ))}
           </div>
@@ -598,6 +768,10 @@ export default function App() {
     const iconBg = turn === 'p1' ? 'bg-teal-800/50' : 'bg-pink-700/50';
     const accentColor = turn === 'p1' ? 'teal' : 'pink';
     const isLastAction = turn === 'p2' && currentStepIndex === selectedModel.steps.length - 1;
+
+    const isEmotionalQuestion = currentQuestion.toLowerCase().includes('emotionally') || 
+                               currentQuestion.toLowerCase().includes('soul') || 
+                               currentQuestion.toLowerCase().includes('feeling — really');
 
     return (
       <div className="max-w-xl mx-auto px-4 py-6 flex flex-col min-h-screen">
@@ -635,23 +809,37 @@ export default function App() {
             </div>
 
             <div className="flex-1 flex flex-col">
-              <div className="mb-6 flex items-center gap-4">
-                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl font-black text-white shadow-lg ${iconBg} animate-float`}>{step.letter}</div>
-                 <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60">{step.word}</h2>
+              <div className="mb-6 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl font-black text-white shadow-lg ${iconBg} animate-float`}>{step.letter}</div>
+                   <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60">{step.word}</h2>
+                </div>
+                {isEmotionalQuestion && (
+                  <button 
+                    onClick={() => setWheelPath([])} 
+                    className="p-2 bg-white/10 rounded-full text-white/40 hover:text-white"
+                    title="Reset Wheel"
+                  >
+                    <RefreshCcw size={16} />
+                  </button>
+                )}
               </div>
+              
               <div className="mb-6">
                 <p className="text-2xl md:text-3xl font-bold text-white leading-tight tracking-tight text-left italic">"{currentQuestion}"</p>
               </div>
 
-              <div className="mb-6">
-                 <div className="flex flex-wrap gap-2">
-                    {shuffledPrompts.map((p, idx) => (
-                      <button key={idx} onClick={() => handleQuickPromptClick(p)} className="px-3 py-1.5 bg-white/5 hover:bg-white/15 border border-white/5 rounded-xl text-white text-[10px] font-bold transition-all whitespace-nowrap active:scale-95">
-                        {p}
-                      </button>
-                    ))}
-                 </div>
-              </div>
+              {isEmotionalQuestion ? renderFeelingsWheel() : (
+                <div className="mb-6">
+                   <div className="flex flex-wrap gap-2">
+                      {shuffledPrompts.map((p, idx) => (
+                        <button key={idx} onClick={() => handleQuickPromptClick(p)} className="px-3 py-1.5 bg-white/5 hover:bg-white/15 border border-white/5 rounded-xl text-white text-[10px] font-bold transition-all whitespace-nowrap active:scale-95">
+                          {p}
+                        </button>
+                      ))}
+                   </div>
+                </div>
+              )}
 
               <div className="text-left mt-auto flex-1">
                 <textarea 
@@ -691,8 +879,8 @@ export default function App() {
                <div key={idx} className="bg-white rounded-[2.5rem] p-8 shadow-xl border border-pink-50">
                  <div className="flex items-center gap-4 mb-6"><div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white font-black text-xl ${selectedModel.buttonColor.split(' ')[0]} animate-float`}>{step.letter}</div><div><h4 className="font-black text-teal-900">{step.word}</h4></div></div>
                  <div className="space-y-4">
-                   <div className="p-4 bg-teal-50 rounded-2xl border border-teal-100"><p className="text-[10px] font-black text-teal-500 uppercase mb-2 tracking-widest">Reflection</p><p className="text-slate-700 italic font-medium leading-relaxed">"{dualNotes[idx]?.p1 || 'No reflection'}"</p></div>
-                   <div className="p-4 bg-pink-50 rounded-2xl border border-pink-100"><p className="text-[10px] font-black text-pink-500 uppercase mb-2 tracking-widest">Reflection</p><p className="text-slate-700 italic font-medium leading-relaxed">"{dualNotes[idx]?.p2 || 'No reflection'}"</p></div>
+                   <div className="p-4 bg-teal-50 rounded-2xl border border-teal-100"><p className="text-[10px] font-black text-teal-500 uppercase mb-2 tracking-widest">{names.p1}'s Reflection</p><p className="text-slate-700 italic font-medium leading-relaxed">"{dualNotes[idx]?.p1 || 'No reflection'}"</p></div>
+                   <div className="p-4 bg-pink-50 rounded-2xl border border-pink-100"><p className="text-[10px] font-black text-pink-500 uppercase mb-2 tracking-widest">{names.p2}'s Reflection</p><p className="text-slate-700 italic font-medium leading-relaxed">"{dualNotes[idx]?.p2 || 'No reflection'}"</p></div>
                  </div>
                </div>
              ))}

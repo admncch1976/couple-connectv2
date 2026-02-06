@@ -14,22 +14,66 @@ export const CHECKIN_MODELS: CheckInModel[] = [
       { 
         letter: 'C', word: 'Connect', emoji: '🤝', 
         question: 'How are you emotionally this week, [Name]?',
-        quickThoughts: ['Feeling peaceful', 'A bit stressed', 'Really happy', 'A bit low', 'Energetic', 'Content']
+        quickThoughts: [
+          'Feeling a deep sense of peace', 
+          'Overwhelmed but trusting', 
+          'Spiritually dry lately', 
+          'Ready for some quiet rest', 
+          'Energetic and kingdom-focused', 
+          'Vulnerable and needing grace',
+          'Feeling the weight of world news',
+          'Joyful in our current season',
+          'A bit disconnected from myself',
+          'Rested and recharged'
+        ]
       },
       { 
         letter: 'A', word: 'Appreciate', emoji: '🌟', 
         question: 'What is one thing I appreciated about you this week, [Name]?',
-        quickThoughts: ['Your kindness', 'Help with chores', 'Listening to me', 'Your hard work', 'Your smile', 'That hug']
+        quickThoughts: [
+          'Your prayerful heart', 
+          'The way you lead our home', 
+          'Your patience during my stress', 
+          'How you serve the church', 
+          'Your infectious laughter', 
+          'The small chores you handled',
+          'Your words of affirmation',
+          'How you listen without judging',
+          'Your consistency in devotions',
+          'Your support of my dreams'
+        ]
       },
       { 
         letter: 'R', word: 'Repair', emoji: '🩹', 
         question: 'Is there anything that needs clearing up between us, [Name]?',
-        quickThoughts: ['All clear', 'That small tiff', 'Tone of voice', 'A misunderstanding', 'Unmet expectations', 'Need to talk more']
+        quickThoughts: [
+          'All clear and at peace', 
+          'My tone of voice earlier', 
+          'Feeling a bit neglected', 
+          'Unmet expectations on chores', 
+          'Misunderstanding about plans', 
+          'Need to discuss our budget',
+          'Lingering hurt from a comment',
+          'Lack of quality time recently',
+          'Need more emotional safety',
+          'Ready to forgive and move on'
+        ]
       },
       { 
         letter: 'E', word: 'Encourage', emoji: '🌻', 
         question: 'How can I specifically support you this week, [Name]?',
-        quickThoughts: ['More quality time', 'Words of affirmation', 'Help with kids/home', 'Pray for me', 'Just be present', 'Plan a date']
+        quickThoughts: [
+          'Pray for my work clarity', 
+          'Help me find rest time', 
+          'Words of affirmation today', 
+          'A simple date night', 
+          'Handle the kitchen tonight', 
+          'Just listen while I vent',
+          'Remind me of God\'s promises',
+          'Give me some alone time',
+          'Take a walk with me',
+          'Surprise me with a treat'
+        ]
       }
     ]
   },
@@ -45,40 +89,67 @@ export const CHECKIN_MODELS: CheckInModel[] = [
       { 
         letter: 'L', word: 'Listen', emoji: '👂', 
         question: 'What’s on your heart right now, [Name]?',
-        quickThoughts: ['Work concerns', 'Future dreams', 'Family stuff', 'Just tired', 'Feeling blessed', 'A bit anxious']
+        quickThoughts: [
+          'Concern for a family member', 
+          'Excitement about a new goal', 
+          'Tired from the daily grind', 
+          'Dreaming about our future', 
+          'A struggle with comparison', 
+          'Deep gratitude for life',
+          'Anxiety about upcoming changes',
+          'Hope for a breakthrough',
+          'Feeling a bit restless',
+          'Desire for deeper community'
+        ]
       },
       { 
         letter: 'O', word: 'Observe', emoji: '👁️', 
         question: 'How are you feeling — really, [Name]?',
-        quickThoughts: ['Vulnerable', 'Strong', 'Disconnected', 'Deeply loved', 'Optimistic', 'Overwhelmed']
+        quickThoughts: [
+          'Strong and resilient', 
+          'Fragile and needing care', 
+          'Content with simplicity', 
+          'Eager for a new challenge', 
+          'A bit lonely in the crowd', 
+          'Surrounded by grace',
+          'Focused on my calling',
+          'Struggling to stay present',
+          'Ready to surrender control',
+          'Confident in our path'
+        ]
       },
       { 
         letter: 'V', word: 'Value', emoji: '💎', 
         question: 'What made you feel valued (or not) this week, [Name]?',
-        quickThoughts: ['Your text messages', 'Shared meals', 'Being heard', 'Acts of service', 'A compliment', 'Shared prayers']
+        quickThoughts: [
+          'Our shared prayer time', 
+          'A thoughtful text from you', 
+          'When you took the kids out', 
+          'Your eye contact while I spoke', 
+          'A dismissive comment (ouch)', 
+          'When you defended me',
+          'Shared chores in the evening',
+          'Your physical touch',
+          'When you noticed my effort',
+          'When you asked for my advice'
+        ]
       },
       { 
         letter: 'E', word: 'Engage', emoji: '🗓️', 
         question: 'What can we intentionally do together this week, [Name]?',
-        quickThoughts: ['Game night', 'Movie marathon', 'Long walk', 'Cook together', 'Church service', 'Quiet evening']
+        quickThoughts: [
+          'Visit a local cafe', 
+          'A long prayer walk', 
+          'Cook a new recipe', 
+          'Read a book together', 
+          'Service at the mission', 
+          'A movie marathon night',
+          'Garden / Backyard time',
+          'Invite friends for dinner',
+          'Planning our next trip',
+          'Just a quiet night in'
+        ]
       }
-    ]
-  },
-  {
-    id: 'alive',
-    acronym: 'A.L.I.V.E.',
-    title: 'Growth & Shared Vision',
-    emoji: '🔥',
-    color: 'bg-fuchsia-100 text-fuchsia-700',
-    buttonColor: 'bg-fuchsia-500 hover:bg-fuchsia-600 shadow-fuchsia-200',
-    description: 'A deep dive into learning about each other and aligning your future.',
-    recommended: 'Monthly',
-    steps: [
-      { letter: 'A', word: 'Appreciation', emoji: '💖', question: 'What did you love about us this month, [Name]?', quickThoughts: ['Our resilience', 'Fun adventures', 'Deep talks', 'Growing intimacy', 'Better communication'] },
-      { letter: 'L', word: 'Learning', emoji: '🧠', question: 'What have you learned about me lately, [Name]?', quickThoughts: ['Your new hobby', 'How you handle stress', 'Your inner strength', 'What triggers you', 'Your love language'] },
-      { letter: 'I', word: 'Issues', emoji: '🌩️', question: 'Any tension or unspoken frustration, [Name]?', quickThoughts: ['Finances', 'Time management', 'In-laws', 'Household roles', 'None, doing great', 'Need more intimacy'] },
-      { letter: 'V', word: 'Vision', emoji: '🔭', question: 'Are we aligned in our current direction, [Name]?', quickThoughts: ['Fully aligned', 'Need adjustment', 'Talking about kids', 'Career changes', 'Financial goals'] },
-      { letter: 'E', word: 'Intimacy', emoji: '💞', question: 'Do you feel emotionally close to me, [Name]?', quickThoughts: ['Very close', 'A bit distant', 'Working on it', 'Deeper than ever', 'Need more talk time'] }
     ]
   },
   {
@@ -90,57 +161,182 @@ export const CHECKIN_MODELS: CheckInModel[] = [
     buttonColor: 'bg-cyan-600 hover:bg-cyan-700 shadow-cyan-200',
     description: 'Built for couples to pray, address conflict with grace, and bless each other.',
     steps: [
-      { letter: 'P', word: 'Prayer', emoji: '🙏', question: 'How can I pray for you this week, [Name]?', quickThoughts: ['For health', 'For work clarity', 'For peace of mind', 'For our family', 'For spiritual growth'] },
-      { letter: 'E', word: 'Emotional State', emoji: '🎭', question: 'Where is your soul at today, [Name]?', quickThoughts: ['Thirsting for God', 'Resting in grace', 'A bit weary', 'Joyful heart', 'Seeking peace'] },
-      { letter: 'A', word: 'Appreciation', emoji: '🎁', question: 'What blessed you about our home recently, [Name]?', quickThoughts: ['The peaceful vibe', 'Laughter of children', 'Shared devotion', 'A clean space', 'Good food'] },
-      { letter: 'C', word: 'Conflict', emoji: '⚖️', question: 'Any tension we need to address with grace, [Name]?', quickThoughts: ['Forgiven', 'Need to apologize', 'Grace-filled talk', 'Moving forward', 'All clear'] },
-      { letter: 'E', word: 'Encouragement', emoji: '🗣️', question: 'What life-giving word can I speak to you, [Name]?', quickThoughts: ["You're doing great", "I believe in you", "God is with us", "I'm on your team", "You are enough"] }
+      { letter: 'P', word: 'Prayer', emoji: '🙏', question: 'How can I pray for you this week, [Name]?', quickThoughts: ['Clarity in decision making', 'Strength for a difficult task', 'Patience with the children', 'Healing in a relationship', 'Growth in my prayer life', 'Provision for a need', 'Spiritual discernment', 'Peace over my anxiety', 'A heart of worship', 'Opportunities to share faith'] },
+      { letter: 'E', word: 'Emotional State', emoji: '🎭', question: 'Where is your soul at today, [Name]?', quickThoughts: ['Thirsting for God', 'Resting in His grace', 'A bit weary from the climb', 'Joyful and overflowing', 'Seeking still waters', 'Navigating a valley', 'On a mountaintop', 'Waiting in the middle', 'Anchored in truth', 'Feeling the Spirit\'s nudge'] },
+      { letter: 'A', word: 'Appreciation', emoji: '🎁', question: 'What blessed you about our home recently, [Name]?', quickThoughts: ['The peace in our walls', 'Laughter around the table', 'Your gentle spirit', 'Shared devotion time', 'How we handled a conflict', 'The warmth of our welcome', 'Our hospitality to others', 'Sacrificial love shown', 'Growth in our kids', 'Consistency in prayer'] },
+      { letter: 'C', word: 'Conflict', emoji: '⚖️', question: 'Any tension we need to address with grace, [Name]?', quickThoughts: ['Completely at peace', 'Small friction at work', 'Need to talk through a choice', 'A misunderstanding of words', 'Feeling unheard on a topic', 'Need to align our hearts', 'Grace-filled correction', 'Lingering frustration', 'Unresolved argument', 'Ready for reconciliation'] },
+      { letter: 'E', word: 'Encouragement', emoji: '🗣️', question: 'What life-giving word can I speak to you, [Name]?', quickThoughts: ["You are a good steward", "God is using you", "I'm so proud of your growth", "You are deeply loved", "Your work has eternal value", "You are a light to many", "Keep pressing on", "Rest is not earned", "You are chosen and known", "I see the fruit in you"] }
     ]
   }
 ];
 
-export const JOY_SUGGESTIONS: Record<string, string[]> = {
-  'Daily': [
-    'Morning Masala Chai & Manna ☕', 
-    'Couple Devotional & Intercession 🙏', 
-    'Reading a Proverb together 📖',
-    'Post-Dinner Prayer Walk 🚶', 
-    'Encouraging Bible Verse Swap 🕊️', 
-    'Bedtime Gratitude & Grace Share ✨', 
-    'Helping with household chores together 🍳'
-  ],
-  'Weekly': [
-    'Sunday Church Service & Fellowship ⛪', 
-    'LRS Seminar Study/Discussion ✍️',
-    'Friday Night Bible & Biryani 🍛', 
-    'Long Drive to a Highway Dhaba 🚗',
-    'Street Food (Chaat) & Connection Date 🍝', 
-    'Washing each other\'s feet (John 13) 🌊',
-    'Home Worship & Samosa Date 🎶'
-  ],
-  'Monthly': [
-    'Marriage Enrichment Workshop 🏫',
-    'LRS Seminar In-Person Meetup 🤝',
-    'Weekend Hill Station Getaway ⛰️', 
-    'Saree/Kurta Shopping spree 🛍️', 
-    'Serving at an Orphanage or Shelter 🎁', 
-    'Candle-light Dinner with Prayer Focus 🕯️', 
-    'Couple\'s Ayurvedic Spa Day 🧖‍♂️'
-  ],
-  'Annually': [
-    'Marriage Enrichment Retreat 🌿', 
-    'Pilgrimage to Holy Land/Sites 🕋', 
-    'Church Family Camp ⛺',
-    'Big International Family Vacation ✈️', 
-    'Marriage Anniversary Renewal Ceremony 👰', 
-    'Traditional Gold/Legacy Gift Investment 💍'
-  ],
-  '5 Years': [
-    'Building our "Bethel" Dream Home 🏠', 
-    'Designing a Kingdom Legacy Business 💼', 
-    'Child Education & Mission Fund 💰', 
-    'Hosting a Grand Family Thanksgiving 👨‍👩‍👧‍👦',
-    'Debt-Free Celebration Milestone 📉',
-    'Sponsoring a Major Ministry Project 🌍'
-  ]
+export interface JoySuggestionSet {
+  activities: string[];
+  times: string[];
+}
+
+export const JOY_SUGGESTIONS: Record<string, JoySuggestionSet> = {
+  'Daily': {
+    activities: [
+      'Morning Devos & Specialty Brew ☕', 
+      'Slow Grace-Filled Walk 🚶‍♂️', 
+      'Evening Prayer & Decompression 🌙', 
+      'Reading a Spirit-Led Book 📖', 
+      'Words of Affirmation Swap ✨', 
+      'Shared Journaling: Gospel Joy 📝', 
+      'Unplugged Table Fellowship 🍽️', 
+      'Intercessory DM / Text for each other 📲', 
+      'Listening to a Worship Session 🎶', 
+      'Kudumba Prarthana (Legacy Prayer) 🙏', 
+      'Quiet Contemplation / Meditation 🧘',
+      'Daily Grace Check-in 🗣️'
+    ],
+    times: ['Sunrise / 6 AM', 'Before the Hustle', 'Mid-Morning Break', 'Afternoon Refresh', 'Sundown / 6:30 PM', 'Post-Dinner Unwind', 'Bedtime Ritual', '10 Minutes of Silence', 'During Commute']
+  },
+  'Weekly': {
+    activities: [
+      'Sunday Service & Brunch ⛪', 
+      'Life Group / Small Group Hang 🤝', 
+      'Coffee & Theology Date ☕', 
+      'Unplugged Sabbath Rhythm 📵', 
+      'Missional Service Project 🎁', 
+      'Couples Bible Study Session 📜', 
+      'Nature Hike & Deep Connection 🌳', 
+      'Marriage-Building Podcast & Talk 🎧', 
+      'Friday Fast & Reflection 🤲', 
+      'Intentional Neighbor Blessing 🏡', 
+      'Washing Each Other\'s Feet (Ritual) 🌊',
+      'Community Worship Night 🎸'
+    ],
+    times: ['Every Sunday', 'Mid-Week Reset', 'Friday Evening', 'Saturday Sabbath', 'Weekend Morning', 'Tuesday Life Group', 'Thursday Outreach', 'Every 7 Days']
+  },
+  'Monthly': {
+    activities: [
+      'Marriage Mentor Brunch 👥', 
+      'Full Day of Silence & Rest 🤫', 
+      'Weekend Reconnection Getaway 🏖️', 
+      'Life Vision & Kingdom Budget Review 💰', 
+      'Local NGO / Mercy Ministry Sewa 🏥', 
+      'Gospel Feast with Seekers 🍽️', 
+      'Spiritual Formation Workshop 🏫', 
+      'Monthly Legacy Letter Writing ✉️', 
+      'Pilgrimage to a Heritage Church 🏛️', 
+      'Creative Date: Clay/Art/Music 🎨',
+      'Couples Communion Prayer 🍷',
+      'Prayer Vigil / All-Night Worship 🌙'
+    ],
+    times: ['1st Saturday', 'Payday Vision Meet', 'Last Sunday', 'Monthly Anniversary', 'Every 15th', 'Full Moon Walk', 'Quarterly Reflection']
+  },
+  'Annually': {
+    activities: [
+      '3-Day Silent Reconnection Retreat 🏔️', 
+      'Mission Exposure / Field Trip ✈️', 
+      'Vow Renewal & Anniversary Feast 💍', 
+      'Regional Christian Conference 🏟️', 
+      'Personal Spiritual Audit 📝', 
+      'Hosting a Neighborhood Agape Meal 🍗', 
+      'Advent / Passion Week Journey 🕯️', 
+      'Short-Term Theological Course 🎓', 
+      'Family Camp / Convocation ⛺', 
+      'Stewardship Goal Celebration 📈',
+      'Christmas Caroling Fellowship 🎄',
+      'Easter Sunrise Worship 🌅'
+    ],
+    times: ['January Reset', 'Lenten Season', 'Resurrection Sunday', 'Monsoon Retreat', 'Wedding Anniversary', 'Advent Season', 'End-of-Year Thanksgiving']
+  },
+  '5 Years': {
+    activities: [
+      'Adopting a Global Mission Field 🗺️', 
+      'Launching a Missional Habit 🚀', 
+      'Kingdom-Focused Savings Goal 💎', 
+      'Sponsoring a Rural Church Plant 🏗️', 
+      'Legacy Planning & Mentoring 📜', 
+      'Full Theological Certification 🎓', 
+      'Starting a Couples Ministry 👫', 
+      'Building our Family "Bethel" 🏠', 
+      'Bible Translation Support 🌍', 
+      'Deepening Community Leadership 🎖️',
+      'Establishing a Heritage Fund 🏦'
+    ],
+    times: ['By Year 2', 'Target: Year 3', 'Completion: Year 5', 'Next Decade Goal', 'Five-Year Milestone', 'Future Legacy Date']
+  }
+};
+
+export const FEELINGS_DATA = {
+  Happy: {
+    color: 'bg-yellow-400',
+    secondary: {
+      Playful: ['Cheeky', 'Free'],
+      Content: ['Joyful', 'Satisfied'],
+      Interested: ['Curious', 'Inquisitive'],
+      Proud: ['Successful', 'Confident'],
+      Accepted: ['Respected', 'Valued'],
+      Powerful: ['Courageous', 'Creative'],
+      Peaceful: ['Loving', 'Thankful'],
+      Trusting: ['Sensitive', 'Intimate'],
+      Optimistic: ['Hopeful', 'Inspired']
+    }
+  },
+  Sad: {
+    color: 'bg-blue-400',
+    secondary: {
+      Lonely: ['Isolated', 'Abandoned'],
+      Vulnerable: ['Fragile', 'Victimized'],
+      Despairing: ['Heartbroken', 'Powerless'],
+      Guilty: ['Remorseful', 'Ashamed'],
+      Depressed: ['Empty', 'Inferior'],
+      Hurt: ['Embarrassed', 'Disappointed']
+    }
+  },
+  Angry: {
+    color: 'bg-red-400',
+    secondary: {
+      'Let down': ['Betrayed', 'Resentful'],
+      Humiliated: ['Disrespected', 'Ridiculed'],
+      Bitter: ['Indignant', 'Violated'],
+      Mad: ['Furious', 'Jealous'],
+      Aggressive: ['Provoked', 'Hostile'],
+      Frustrated: ['Infuriated', 'Annoyed'],
+      Distant: ['Withdrawn', 'Numb'],
+      Critical: ['Skeptical', 'Dismissive']
+    }
+  },
+  Fearful: {
+    color: 'bg-orange-400',
+    secondary: {
+      Scared: ['Helpless', 'Frightened'],
+      Anxious: ['Overwhelmed', 'Worried'],
+      Insecure: ['Inadequate', 'Inferior'],
+      Weak: ['Worthless', 'Insignificant'],
+      Rejected: ['Excluded', 'Persecuted'],
+      Threatened: ['Nervous', 'Exposed']
+    }
+  },
+  Disgusted: {
+    color: 'bg-green-400',
+    secondary: {
+      Repelled: ['Hesitant', 'Nauseated'],
+      Awful: ['Terrible', 'Detestable'],
+      Disappointed: ['Revolted', 'Appalled'],
+      Disapproving: ['Judgmental', 'Embarrassed']
+    }
+  },
+  Surprised: {
+    color: 'bg-purple-400',
+    secondary: {
+      Startled: ['Shocked', 'Dismayed'],
+      Confused: ['Disillusioned', 'Perplexed'],
+      Amazed: ['Astonished', 'Awestruck'],
+      Excited: ['Eager', 'Energetic']
+    }
+  },
+  Bad: {
+    color: 'bg-slate-400',
+    secondary: {
+      Bored: ['Indifferent', 'Apathetic'],
+      Busy: ['Pressured', 'Rushed'],
+      Stressed: ['Overwhelmed', 'Out of control'],
+      Tired: ['Sleepy', 'Unfocussed']
+    }
+  }
 };
