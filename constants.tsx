@@ -1,6 +1,14 @@
 
 import { CheckInModel } from './types';
 
+export const LOVE_LANGUAGES = [
+  { id: 'words', name: 'Words of Affirmation', emoji: '🗣️', prompt: 'Write a sticky note with 3 things you admire about them and hide it in their bag/car.' },
+  { id: 'service', name: 'Acts of Service', emoji: '🧹', prompt: 'Take over one task or chore they usually do (like dishes or trash) for the next 24 hours.' },
+  { id: 'gifts', name: 'Receiving Gifts', emoji: '🎁', prompt: 'Pick up their favorite small treat, snack, or a flower on your way home today.' },
+  { id: 'time', name: 'Quality Time', emoji: '⏳', prompt: 'Set a 20-minute timer this evening for "No Screens" intentional conversation.' },
+  { id: 'touch', name: 'Physical Touch', emoji: '🤝', prompt: 'Give them a long, intentional hug (at least 20 seconds) or offer a foot massage.' }
+];
+
 export const CHECKIN_MODELS: CheckInModel[] = [
   {
     id: 'care',
@@ -29,7 +37,7 @@ export const CHECKIN_MODELS: CheckInModel[] = [
       },
       { 
         letter: 'A', word: 'Appreciate', emoji: '🌟', 
-        question: 'What is one thing I appreciated about you this week, [Name]?',
+        question: 'What is one thing you appreciated about me, [Name]?',
         quickThoughts: [
           'Your prayerful heart', 
           'The way you lead our home', 
@@ -120,18 +128,18 @@ export const CHECKIN_MODELS: CheckInModel[] = [
       },
       { 
         letter: 'V', word: 'Value', emoji: '💎', 
-        question: 'What made you feel valued (or not) this week, [Name]?',
+        question: 'Which Love Language makes you feel most valued right now, [Name]?',
         quickThoughts: [
-          'Our shared prayer time', 
-          'A thoughtful text from you', 
-          'When you took the kids out', 
-          'Your eye contact while I spoke', 
-          'A dismissive comment (ouch)', 
-          'When you defended me',
-          'Shared chores in the evening',
-          'Your physical touch',
-          'When you noticed my effort',
-          'When you asked for my advice'
+          'Words of Affirmation', 
+          'Acts of Service', 
+          'Receiving Gifts', 
+          'Quality Time', 
+          'Physical Touch', 
+          'Deep eye contact',
+          'Public recognition',
+          'A surprise note',
+          'Uninterrupted focus',
+          'Gentle encouragement'
         ]
       },
       { 
@@ -198,65 +206,65 @@ export const JOY_SUGGESTIONS: Record<string, JoySuggestionSet> = {
       'Sunday Service & Brunch ⛪', 
       'Life Group / Small Group Hang 🤝', 
       'Coffee & Theology Date ☕', 
-      'Unplugged Sabbath Rhythm 📵', 
-      'Missional Service Project 🎁', 
-      'Couples Bible Study Session 📜', 
-      'Nature Hike & Deep Connection 🌳', 
-      'Marriage-Building Podcast & Talk 🎧', 
-      'Friday Fast & Reflection 🤲', 
-      'Intentional Neighbor Blessing 🏡', 
-      'Washing Each Other\'s Feet (Ritual) 🌊',
-      'Community Worship Night 🎸'
+      'Unplugged Sabbath Rhythm 洒落', 
+      'Missional Service Project 洒落', 
+      'Couples Bible Study Session 洒落', 
+      'Nature Hike & Deep Connection 洒落', 
+      'Marriage-Building Podcast & Talk 洒落', 
+      'Friday Fast & Reflection 洒落', 
+      'Intentional Neighbor Blessing 洒落', 
+      'Washing Each Other\'s Feet (Ritual) 洒落',
+      'Community Worship Night 洒落'
     ],
     times: ['Every Sunday', 'Mid-Week Reset', 'Friday Evening', 'Saturday Sabbath', 'Weekend Morning', 'Tuesday Life Group', 'Thursday Outreach', 'Every 7 Days']
   },
   'Monthly': {
     activities: [
-      'Marriage Mentor Brunch 👥', 
-      'Full Day of Silence & Rest 🤫', 
-      'Weekend Reconnection Getaway 🏖️', 
-      'Life Vision & Kingdom Budget Review 💰', 
-      'Local NGO / Mercy Ministry Sewa 🏥', 
-      'Gospel Feast with Seekers 🍽️', 
-      'Spiritual Formation Workshop 🏫', 
-      'Monthly Legacy Letter Writing ✉️', 
-      'Pilgrimage to a Heritage Church 🏛️', 
-      'Creative Date: Clay/Art/Music 🎨',
-      'Couples Communion Prayer 🍷',
-      'Prayer Vigil / All-Night Worship 🌙'
+      'Marriage Mentor Brunch 洒落', 
+      'Full Day of Silence & Rest 洒落', 
+      'Weekend Reconnection Getaway 洒落', 
+      'Life Vision & Kingdom Budget Review 洒落', 
+      'Local NGO / Mercy Ministry Sewa 洒落', 
+      'Gospel Feast with Seekers 洒落', 
+      'Spiritual Formation Workshop 洒落', 
+      'Monthly Legacy Letter Writing 洒落', 
+      'Pilgrimage to a Heritage Church 洒落', 
+      'Creative Date: Clay/Art/Music 洒落',
+      'Couples Communion Prayer 洒落',
+      'Prayer Vigil / All-Night Worship 洒落'
     ],
     times: ['1st Saturday', 'Payday Vision Meet', 'Last Sunday', 'Monthly Anniversary', 'Every 15th', 'Full Moon Walk', 'Quarterly Reflection']
   },
   'Annually': {
     activities: [
-      '3-Day Silent Reconnection Retreat 🏔️', 
-      'Mission Exposure / Field Trip ✈️', 
-      'Vow Renewal & Anniversary Feast 💍', 
-      'Regional Christian Conference 🏟️', 
-      'Personal Spiritual Audit 📝', 
-      'Hosting a Neighborhood Agape Meal 🍗', 
-      'Advent / Passion Week Journey 🕯️', 
-      'Short-Term Theological Course 🎓', 
-      'Family Camp / Convocation ⛺', 
-      'Stewardship Goal Celebration 📈',
-      'Christmas Caroling Fellowship 🎄',
-      'Easter Sunrise Worship 🌅'
+      '3-Day Silent Reconnection Retreat 洒落', 
+      'Mission Exposure / Field Trip 洒落', 
+      'Vow Renewal & Anniversary Feast 洒落', 
+      'Regional Christian Conference 洒落', 
+      'Personal Spiritual Audit 洒落', 
+      'Hosting a Neighborhood Agape Meal 洒落', 
+      'Advent / Passion Week Journey 洒落', 
+      'Short-Term Theological Course 洒落', 
+      'Family Camp / Convocation 洒落', 
+      'Stewardship Goal Celebration 洒落',
+      'Christmas Caroling Fellowship 洒落',
+      'Easter Sunrise Worship 洒落'
     ],
     times: ['January Reset', 'Lenten Season', 'Resurrection Sunday', 'Monsoon Retreat', 'Wedding Anniversary', 'Advent Season', 'End-of-Year Thanksgiving']
   },
   '5 Years': {
     activities: [
-      'Adopting a Global Mission Field 🗺️', 
-      'Launching a Missional Habit 🚀', 
-      'Kingdom-Focused Savings Goal 💎', 
-      'Sponsoring a Rural Church Plant 🏗️', 
-      'Legacy Planning & Mentoring 📜', 
-      'Full Theological Certification 🎓', 
-      'Starting a Couples Ministry 👫', 
-      'Building our Family "Bethel" 🏠', 
-      'Bible Translation Support 🌍', 
-      'Deepening Community Leadership 🎖️',
-      'Establishing a Heritage Fund 🏦'
+      'Adopting a Global Mission Field 洒落', 
+      'Launching a Missional Habit 洒落', 
+      'Kingdom-Focused Savings Goal 洒落', 
+      'Sponsoring a Rural Church Plant 洒落', 
+      'Legacy Planning & Mentoring 洒落', 
+      'Full Theological Certification 洒落', 
+      'Starting a Couples Ministry 洒落', 
+      'Building our Family "Bethel" 洒落', 
+      'Bible Translation Support 洒落', 
+      'Deepening Community Leadership 洒落',
+      'Establishing a Heritage Fund 洒落'
     ],
     times: ['By Year 2', 'Target: Year 3', 'Completion: Year 5', 'Next Decade Goal', 'Five-Year Milestone', 'Future Legacy Date']
   }
