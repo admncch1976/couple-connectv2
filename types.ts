@@ -1,4 +1,3 @@
-
 export interface Step {
   letter: string;
   word: string;
@@ -11,6 +10,7 @@ export interface CheckInModel {
   id: string;
   acronym: string;
   title: string;
+  expanded: string; // Expanded words like "Connect • Appreciate..."
   emoji: string;
   color: string;
   buttonColor: string;
@@ -36,7 +36,7 @@ export interface DualReflection {
 }
 
 export type View = 'home' | 'onboarding' | 'checkin' | 'summary';
-export type HomeTab = 'checkins' | 'joy';
+export type HomeTab = 'checkins' | 'fun' | 'joy';
 export type Turn = 'p1' | 'p2';
 
 export interface AIInsight {
@@ -49,4 +49,15 @@ export interface DateIdea {
   title: string;
   description: string;
   whyItWorks: string;
+}
+
+export interface FunQuestion {
+  id: number;
+  text: string;
+  mode: 'light' | 'deep';
+}
+
+export interface BibleJoke {
+  q: string;
+  a: string;
 }
