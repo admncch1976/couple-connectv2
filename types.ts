@@ -1,3 +1,4 @@
+
 export interface Step {
   letter: string;
   word: string;
@@ -10,12 +11,13 @@ export interface CheckInModel {
   id: string;
   acronym: string;
   title: string;
-  expanded: string; // Expanded words like "Connect • Appreciate..."
+  expanded: string;
   emoji: string;
   color: string;
   buttonColor: string;
   description: string;
   recommended?: string;
+  practicalPrompt?: string;
   steps: Step[];
 }
 
@@ -35,7 +37,12 @@ export interface DualReflection {
   p2: string;
 }
 
-export type View = 'home' | 'onboarding' | 'checkin' | 'summary';
+export interface CustomQuizQuestion {
+  question: string;
+  answer: string;
+}
+
+export type View = 'home' | 'onboarding' | 'checkin' | 'summary' | 'ai-insight';
 export type HomeTab = 'checkins' | 'fun' | 'joy';
 export type Turn = 'p1' | 'p2';
 
